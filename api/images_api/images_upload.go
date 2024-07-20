@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
+	"gvb_server/models"
 	"gvb_server/utils"
 	"gvb_server/utils/res"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -89,10 +91,39 @@ func (ImagesApi) ImagesUploadView(c *gin.Context) {
 			})
 			continue
 		}
+		// 判断文件是否重复
+		fileObj, err := file.Open()
+		if err != nil {
+			global.Log.Error("upload file fail", fileObj, err)
+			continue
+		}
+		// 读取文件
+		fileBytes, err := io.ReadAll(fileObj)
+		if err != nil {
+			global.Log.Error("read file fail", fileObj, err)
+			continue
+		}
+		hash := utils.Md5(fileBytes)
+		var bannerModel models.BannerModel
+		err = global.DB.Take(&bannerModel, "hash = ?", hash).Error
+		if err == nil {
+			fileResponse = append(fileResponse, FileUploadResponse{
+				FileName:  file.Filename,
+				IsSuccess: true,
+				Msg:       fmt.Sprintf("图片重复"),
+			})
+			continue
+		}
 		fileResponse = append(fileResponse, FileUploadResponse{
 			FileName:  filePath,
 			IsSuccess: true,
 			Msg:       fmt.Sprintf("upload file success"),
+		})
+		// 图片入库
+		global.DB.Create(&models.BannerModel{
+			Name: file.Filename,
+			Hash: hash,
+			Path: filePath,
 		})
 	}
 	res.OkWithData(fileResponse, c)

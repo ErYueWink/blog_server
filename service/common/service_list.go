@@ -19,7 +19,7 @@ func CommonList[T any](model T, option Option) (list []T, count int64, err error
 	}
 	// 排序默认值
 	if option.Sort == "" {
-		option.Sort = "create_at desc" // 默认根据时间倒序排序
+		option.Sort = "created_at desc" // 默认根据时间倒序排序
 	}
 	// 图片总条数
 	count = DB.Select("id").Find(&list).RowsAffected

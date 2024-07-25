@@ -25,7 +25,7 @@ func (AdvertApi) AdvertCreateView(c *gin.Context) {
 	}
 	var advertModel models.AdvertModel
 	count := global.DB.Take(&advertModel, "title = ?", cr.Title).RowsAffected
-	if count == 0 {
+	if count != 0 {
 		res.FailWithMsg(fmt.Sprintf("标题为：%s的广告重复 请重新输入", cr.Title), c)
 		return
 	}

@@ -6,4 +6,5 @@ func (router RouterGroup) AdvertRouter() {
 	app := api.ApiGroup{}.AdvertApi
 	router.POST("/advert", app.AdvertCreateView)
 	router.GET("/advert", app.AdvertListView)
+	router.DELETE("/advert", app.AdvertRemoveView)
 }

@@ -15,6 +15,7 @@ type AdvertRequest struct {
 	IsShow bool   `json:"is_show" required:"true" msg:"图片是否显示"`
 }
 
+// AdvertCreateView 发布广告
 func (AdvertApi) AdvertCreateView(c *gin.Context) {
 	var cr AdvertRequest
 	err := c.ShouldBindJSON(&cr)

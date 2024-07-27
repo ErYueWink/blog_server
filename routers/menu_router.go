@@ -7,4 +7,5 @@ func (r RouterGroup) MenuRouter() {
 	r.POST("/menu", app.MenuCreateView)
 	r.GET("/menu/:id", app.MenuDetailView)
 	r.GET("/menu", app.MenuListView)
+	r.DELETE("/menu", app.MenuRemoveView)
 }
